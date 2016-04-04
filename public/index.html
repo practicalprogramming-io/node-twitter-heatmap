@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Twitter Heat Map</title>
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/lib/leaflet/leaflet.css" />
+</head>
+<body>
+  <div id="map"></div>
+  <script src="/lib/socket.io.js"></script>
+  <script src="/lib/leaflet/leaflet.js"></script>
+  <script src="/lib/leaflet-heat.js"></script>
+  <script>
+    var _layer = [];
+    var layer = L.layerGroup(_layer);
+
+//    var map = L.map('map', {layers: [layer]}).fitBounds([[-180,-90],[180,90]]);
+    var map = L.map('map', {layers: [layer]}).fitBounds([[-170.871,-53.064],[170.871,53.064]]);
+
+/*
+    L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+        subdomains: '1234',
+        attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">'
+          + 'MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetm'
+          + 'ap.org">OpenStreetMap</a> contributors, <a href="http://creative'
+          + 'commons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+        detectRetina: true,
+    }).addTo(map);
+/*
+    var addressPoints = [];
+    var addressPoints = addressPoints.map(function (p) {
+      return [p[1], p[0], 1.0];
+    });
+
+    var heat = L.heatLayer(addressPoints, {radius: 25}).addTo(map);
+*/
+    var socket = io('http://localhost:3000');
+    socket.on('tweet', function (data) {
+      console.log(data.coordinates);
+      //heat.addLatLng(data.coordinates);
+      layer.addLayer(L.marker([data.coordinates[1], data.coordinates[0]]));
+    });
+  </script>
+</body>
+</html>
