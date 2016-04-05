@@ -1,6 +1,7 @@
 var config = require('./config')
   , twitter = require('twitter')
   , client = new twitter(config.twitter_access)
+  , process = require('process')
 ;
 
 client.stream(
@@ -9,11 +10,10 @@ client.stream(
   function (stream) {
 
     stream.on('data', function (data) {
-      if (data.coordinates && data.coordinates !== null) {
-        console.log(data.coordinates);
-      }
+      process.stdout.write(data.toString());
+//      console.log(data);
     });
-
+/*
     stream.on('error', function (error) {
       console.log(error);
     });
@@ -29,5 +29,5 @@ client.stream(
     stream.on('disconnect', function (disconnect) {
       console.log(disconnect);
     });
-
+*/
 });

@@ -4,6 +4,7 @@ body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background-color: black;
 }
 
 #map {
@@ -12,4 +13,9 @@ body {
   left: 0;
   height: 100%;
   width: 100%;
+}
+
+.tweet-marker {
+  border-radius: 50%;
+  background: white;
 }

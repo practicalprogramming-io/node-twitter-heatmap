@@ -4,42 +4,39 @@ var koa = require('koa')
   , send = require('koa-send')
   , serve = require('koa-static')
   , config = require('./config')
-  , twitter = require('twitter')
-  , client = new twitter(config.twitter_access)
   , server = require('http').createServer(app.callback())
   , io = require('socket.io')(server)
+  , spawn = require('child_process').exec
+  , tweets = spawn('node tweets.js')
 ;
 
 
+tweets.stdout.on('data', function (data) {
+  console.log(data);
+//  console.log(data);
+/*    if (data.coordinates && data.coordinates !== null) {
+    socket.emit('tweet', data.coordinates);
+  }
+*/  });
+
+tweets.stderr.on('data', function (data) {
+  console.log(data);
+/*    if (data.coordinates && data.coordinates !== null) {
+    socket.emit('tweet', data.coordinates);
+  }
+*/  });
+
+tweets.on('close', function (code) {
+  console.log('here' + code);
+/*    if (data.coordinates && data.coordinates !== null) {
+    socket.emit('tweet', data.coordinates);
+  }
+*/  });
+
+
 io.on('connection', function (socket) {
-  client.stream(
-    'statuses/filter',
-    {'locations': '-180,-90,180,90'},
-    function (stream) {
 
-      stream.on('data', function (data) {
-        if (data.coordinates && data.coordinates !== null) {
-          socket.emit('tweet', data.coordinates);
-        }
-      });
 
-      stream.on('error', function (error) {
-        console.log(error);
-      });
-
-      stream.on('limit', function (limit) {
-        console.log(limit);
-      });
-
-      stream.on('warning', function (warning) {
-        console.log(warning);
-      });
-
-      stream.on('disconnect', function (disconnect) {
-        console.log(disconnect);
-      });
-
-  });
 });
 
 app.use(serve(__dirname + '/public'));
