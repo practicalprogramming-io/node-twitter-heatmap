@@ -6,36 +6,28 @@ var koa = require('koa')
   , config = require('./config')
   , server = require('http').createServer(app.callback())
   , io = require('socket.io')(server)
-  , spawn = require('child_process').exec
-  , tweets = spawn('node tweets.js')
+  , spawn = require('child_process').spawn
+  , tweets = spawn('node', ['tweets.js'])
+  , StringDecoder = require('string_decoder').StringDecoder
+  , decoder = new StringDecoder('utf8')
 ;
-
-
-tweets.stdout.on('data', function (data) {
-  console.log(data);
-//  console.log(data);
-/*    if (data.coordinates && data.coordinates !== null) {
-    socket.emit('tweet', data.coordinates);
-  }
-*/  });
-
-tweets.stderr.on('data', function (data) {
-  console.log(data);
-/*    if (data.coordinates && data.coordinates !== null) {
-    socket.emit('tweet', data.coordinates);
-  }
-*/  });
-
-tweets.on('close', function (code) {
-  console.log('here' + code);
-/*    if (data.coordinates && data.coordinates !== null) {
-    socket.emit('tweet', data.coordinates);
-  }
-*/  });
 
 
 io.on('connection', function (socket) {
 
+  tweets.stdout.on('data', function (data) {
+    try {
+      data = JSON.parse(decoder.write(data));
+      socket.emit('tweet', data);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  });
+
+  tweets.stderr.on('data', function (data) {
+    console.log('stderr: ', decoder.write(data));
+  });
 
 });
 

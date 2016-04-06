@@ -17,5 +17,19 @@ body {
 
 .tweet-marker {
   border-radius: 50%;
-  background: white;
+  background-color: white;
+  -webkit-animation-name: example;
+  -webkit-animation-duration: 4s;
+  animation-name: tweet-colors;
+  animation-duration: 4s;
+}
+
+@-webkit-keyframes tweet-colors {
+  from {background-color: blue;}
+  to {background-color: white;}
+}
+
+@keyframes tweet-colors {
+  from {background-color: blue;}
+  to {background-color: white;}
 }
